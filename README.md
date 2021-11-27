@@ -12,13 +12,11 @@ You probably want to use this with the [official client](https://github.com/oxod
 
 The setup is quite easy. I am only distributing this software (serverside at least) as a Docker image + docker-compose. If you want to use it any other way, go for it but no support will be given.
 
-Get the docker-compose.prod.yml file available in this repository and put it in a folder on your server.
+Make a folder somewhere on your server. Copy the `docker-compose.prod.yml` as `docker-compose.yml` in it, then copy the `.env.prod` as `.env` and fill the two secrets required.
 
 You need to change the port for the web container to something free on your server, or remove it entirely if you are using a docker-aware reverse proxy like Traefik (But if you are using this, you probably know how to set it up by yourself).
 
 Then setup your sub-domain / path in your reverse proxy to point to this container.
-
-Copy the .env.dist and modify it according to your needs (Probably not much for now as it's only a really basic server).
 
 Start it up with `docker-compose up -d` and you're good to go!
 

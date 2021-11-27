@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  sshelter:
+    image: oxodao/sshelter:0.1
+    volumes:
+      - './jwt:/app/config/jwt'
+    env_file: [ '.env' ]
+    ports:
+      - '80:80'
+      - '443:443'
+
+  database:
+    image: postgres:13-alpine
+    volumes: [ './db:/var/lib/postgresql/data' ]
+    environment:
+      - POSTGRES_USER=sshelter
+      - POSTGRES_PASSWORD=sshelter
+      - POSTGRES_DB=sshelter
