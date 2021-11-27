@@ -6,6 +6,8 @@ SSHelter is a simple tool letting you sync across your computers parts of your s
 
 This does not sync your SSH keys yet, as I'm not comfortable to ensure the security required for this.
 
+You probably want to use this with the [official client](https://github.com/oxodao/sshelter-client).
+
 ## Setup
 
 The setup is quite easy. I am only distributing this software (serverside at least) as a Docker image + docker-compose. If you want to use it any other way, go for it but no support will be given.
