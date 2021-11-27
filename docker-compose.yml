@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  php:
+    build: docker/php
+    volumes:
+      - '.:/app:rw'
+      - 'jwt:/app/config/jwt'
+    env_file: [ '.env', '.env.local' ]
+
+  web:
+    build: docker/nginx
+    volumes:
+      - '.:/app:rw'
+    ports:
+      - '80:80'
+      - '443:443'
+
+  database:
+    image: postgres:13-alpine
+    volumes: [ 'database:/var/lib/postgresql/data' ]
+    environment:
+      - POSTGRES_USER=sshelter
+      - POSTGRES_PASSWORD=sshelter
+      - POSTGRES_DB=sshelter
+    ports:
+      - '5432:5432'
+
+volumes:
+  jwt: ~
+  database: ~
