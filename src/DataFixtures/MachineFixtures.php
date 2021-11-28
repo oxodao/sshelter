@@ -14,7 +14,8 @@ class MachineFixtures extends Fixture implements DependentFixtureInterface
         /** @var User $owner */
         $owner = $this->getReference('User__Admin');
 
-        $machine = (new Machine)->setName('My laptop')->setHostname('192.168.1.12')->setPort(22)->setUser($owner);
+        $machine = (new Machine)->setName('My laptop')->setHostname('192.168.1.12')->setPort(22)->setCategory($this->getReference('Category__LANServers'));
+        $machine->setOwner($owner);
         $manager->persist($machine);
 
         $machine = (new Machine)
@@ -27,7 +28,9 @@ class MachineFixtures extends Fixture implements DependentFixtureInterface
                 ['local_port' => 5532, 'remote_port' => 5432],
                 ['local_port' => 25565, 'remote_port' => 25565],
             ])
-            ->setUser($owner);
+            ->setCategory($this->getReference('Category__LANServers'))
+        ;
+        $machine->setOwner($owner);
         $manager->persist($machine);
 
         /** @var User $owner */
@@ -41,7 +44,8 @@ class MachineFixtures extends Fixture implements DependentFixtureInterface
             ->setForwardedPorts([
                 ['local_port' => 3366, 'remote_port' => 3366]
             ])
-            ->setUser($owner);
+        ;
+        $machine->setOwner($owner);
         $manager->persist($machine);
 
         $manager->flush();
@@ -52,6 +56,7 @@ class MachineFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             UserFixtures::class,
+            CategoryFixtures::class,
         ];
     }
 }

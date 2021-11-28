@@ -40,7 +40,7 @@ class SelfFilter implements ContextAwareFilterInterface
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        $queryBuilder->andWhere("$rootAlias.user = :user")->setParameter('user', $user->getId());
+        $queryBuilder->andWhere("$rootAlias.owner = :user")->setParameter('user', $user->getId());
     }
 
     public function getDescription(string $resourceClass): array

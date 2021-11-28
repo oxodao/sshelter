@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use App\Behavior\HasOwner;
 use App\Entity\Machine;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -19,11 +20,14 @@ class MachineCreationSubscriber implements EventSubscriber
         /** @var Machine $machine */
         $machine = $event->getEntity();
 
-        if (!$machine instanceof Machine) {
+        if (!$machine instanceof HasOwner) {
             return;
         }
 
-        $machine->setUser($this->security->getUser());
+        if ($this->security->getUser())
+        {
+            $machine->setOwner($this->security->getUser());
+        }
     }
 
     public function getSubscribedEvents(): array

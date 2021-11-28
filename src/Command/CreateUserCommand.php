@@ -12,6 +12,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CreateUserCommand extends Command
 {
     private const COMMAND_NAME = 'sshelter:user:create';
+    private const GENERATED_PASSWORD_SIZE = 12;
 
     public function __construct(private EntityManagerInterface $emi)
     {
@@ -42,7 +43,7 @@ class CreateUserCommand extends Command
 
         $shouldTellPassword = false;
         if (!$password) {
-            $password = self::randomPassword(12);
+            $password = self::randomPassword();
             $shouldTellPassword = true;
         }
 
@@ -60,10 +61,10 @@ class CreateUserCommand extends Command
     const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_\'\"@&€()[]!?,;.:/';
 
     // Stolen from https://stackoverflow.com/questions/6101956/generating-a-random-password-in-php
-    private static function randomPassword(int $length) {
+    public static function randomPassword() {
         $pass = array(); //remember to declare $pass as an array
         $alphaLength = strlen(self::ALPHABET) - 1; //put the length -1 in cache
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < self::GENERATED_PASSWORD_SIZE; $i++) {
             $n = rand(0, $alphaLength);
             $pass[] = self::ALPHABET[$n];
         }

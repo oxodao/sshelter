@@ -4,6 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Behavior\HasOwner;
+use App\Behavior\HasOwnerTrait;
+use App\Behavior\HasTimestamps;
+use App\Behavior\HasTimestampsTrait;
 use App\Filters\SelfFilter;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -23,27 +27,31 @@ use Symfony\Component\Validator\Constraints\Regex;
 #[ApiResource(
     collectionOperations: [
         'get'  => [
-            'normalization_context' => ['groups' => ['get_machines']],
+            'normalization_context' => ['groups' => ['get_machines', 'get_timestamps']],
         ],
         'post' => [
             'denormalization_context' => ['groups' => ['post_machine']],
-            'normalization_context'   => ['groups' => ['get_machine']],
+            'normalization_context'   => ['groups' => ['get_machine', 'get_timestamps']],
         ]
     ],
     itemOperations: [
         'get' => [
-            'normalization_context' => ['groups' => ['get_machine']],
+            'normalization_context' => ['groups' => ['get_machine', 'get_timestamps']],
         ],
         'put' => [
             'denormalization_context' => ['groups' => ['put_machine']],
-            'normalization_context'   => ['groups' => ['get_machine']],
+            'normalization_context'   => ['groups' => ['get_machine', 'get_timestamps']],
         ],
         'delete'
-    ]
+    ],
+    attributes: ['pagination_enabled' => false]
 )]
 #[ApiFilter(SelfFilter::class)]
-class Machine
+class Machine implements HasOwner, HasTimestamps
 {
+    use HasTimestampsTrait;
+    use HasOwnerTrait;
+
     #[Id]
     #[GeneratedValue(strategy: 'NONE')]
     #[Column(type: 'uuid')]
@@ -85,12 +93,14 @@ class Machine
     #[Groups(['get_machine', 'get_machines', 'post_machine', 'put_machine'])]
     private array $forwardedPorts = [];
 
-    #[ManyToOne(targetEntity: User::class)]
-    private ?User $user = null;
+    #[ManyToOne(targetEntity: Category::class, inversedBy: 'machines')]
+    private ?Category $category = null;
 
     public function __construct()
     {
         $this->id = Uuid::v4();
+
+        $this->initializeTimestamps();
     }
 
     public function getId(): Uuid
@@ -182,14 +192,14 @@ class Machine
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getCategory(): ?Category
     {
-        return $this->user;
+        return $this->category;
     }
 
-    public function setUser(?User $user): self
+    public function setCategory(?Category $category): self
     {
-        $this->user = $user;
+        $this->category = $category;
 
         return $this;
     }
