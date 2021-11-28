@@ -18,7 +18,9 @@ You need to change the port for the web container to something free on your serv
 
 Then setup your sub-domain / path in your reverse proxy to point to this container.
 
-Start it up with `docker-compose up -d` and you're good to go!
+Start it up with `docker-compose up -d`.
+
+You then need to generate the JWT keys: `docker-compose exec sshelter bin/console lexik:jwt:generate-keypair --overwrite --no-interaction`
 
 
 ## Configuration

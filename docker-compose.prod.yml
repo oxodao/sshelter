@@ -7,8 +7,7 @@ services:
       - './jwt:/app/config/jwt'
     env_file: [ '.env' ]
     ports:
-      - '80:80'
-      - '443:443'
+      - '127.0.0.1:8000:80' # Add this to your reverse proxy
 
   database:
     image: postgres:13-alpine
