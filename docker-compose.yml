@@ -16,6 +16,17 @@ services:
       - '80:80'
       - '443:443'
 
+  node:
+    image: node:alpine
+    working_dir: /app
+    command: npm run start
+    extra_hosts:
+      host.docker.internal: host-gateway
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 3000:3000
+
   database:
     image: postgres:13-alpine
     volumes: [ 'database:/var/lib/postgresql/data' ]

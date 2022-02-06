@@ -1,0 +1,29 @@
+.Login {
+    width: 30em;
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 1em;
+
+    h1 {
+        margin: .25em 0 .5em 0;
+        padding: 0;
+    }
+
+    &__Form {
+        display: flex;
+        flex-direction: column;
+
+        .LoginForm__Textfield {
+            margin: .5em 0 .5em 0 !important; // I don't want to use Material-ui things but I probably should
+        }
+    
+        .LoginForm__Button {
+            margin: .5em 0 .5em 0 !important;
+        }
+    }
+}
