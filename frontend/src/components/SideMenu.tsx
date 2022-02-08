@@ -3,25 +3,25 @@ import StorageIcon from '@mui/icons-material/Storage';
 import AddIcon from '@mui/icons-material/Add';
 import { useSshelter } from "../hooks/SshelterProvider";
 import { Machine } from "../models/Machine";
+import { useMachineEditor } from "../hooks/MachineEditionProvider";
 
 type MenuProps = {
     opened: boolean;
     setMenuOpened: (opened: boolean) => void;
-    selectMachine: (m: Machine) => void;
-    addMachine: () => void;
 }
 
 export const drawerWidth = 240;
 
-export default function SideMenu({ opened, setMenuOpened, selectMachine, addMachine }: MenuProps) {
+export default function SideMenu({ opened, setMenuOpened }: MenuProps) {
     const sshelter = useSshelter();
+    const editor = useMachineEditor();
 
     const drawer = <div style={{display: 'flex', flexDirection: 'column', height: '100%', maxHeight: '100%'}}>
         <Typography variant="h5" m={2}>Machines</Typography>
         <List>
             {
                 sshelter.machines.map((m: Machine) => (
-                    <ListItem button key={m['@id']} onClick={() => { selectMachine(m); setMenuOpened(false); }}>
+                    <ListItem button key={m['@id']} onClick={() => { editor.setMachine(m); setMenuOpened(false); }}>
                         <ListItemIcon><StorageIcon /></ListItemIcon>
                         <ListItemText primary={
                             m.name + (m.shortName ? " (" + m.shortName + ")" : "")
@@ -32,7 +32,7 @@ export default function SideMenu({ opened, setMenuOpened, selectMachine, addMach
         </List>
         <Divider style={{flex: 1}}/>
         <Toolbar style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-            <Button variant='outlined' endIcon={<AddIcon/>} onClick={addMachine}>Add machine</Button>
+            <Button variant='outlined' endIcon={<AddIcon/>} onClick={() => editor.setMachine(null)}>Add machine</Button>
         </Toolbar>
     </div>
 

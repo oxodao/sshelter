@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Token } from "../models/Token";
-import { decode_jwt } from "../utils/decode_jwt";
+import { Token }                                  from "../models/Token";
+import { decode_jwt }                             from "../utils/decode_jwt";
+import useAsyncEffect                             from "use-async-effect";
 
 export type Auth = {
     token: String|null;
@@ -70,7 +71,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         setState({...state, token, refreshToken, tokenData});
     }, []);
 
-    useEffect(() => {
+    useAsyncEffect(async () => {
         if (!state.token || !state.tokenData) {
             return;
         }
@@ -88,7 +89,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         }
 
         // If we have less than 60 seconds, we can renew it immediately
-        refresh();
+        await refresh();
     }, [state.token, state.tokenData])
 
 

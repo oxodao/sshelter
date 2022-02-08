@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import useAsyncEffect from "use-async-effect";
 import { Machine } from "../models/Machine";
-import { Token } from "../models/Token";
-import { decode_jwt } from "../utils/decode_jwt";
+import { useApi } from "./ApiRequest";
 import { useAuth } from "./AuthProvider";
 
 export type Sshelter = {
@@ -10,6 +9,7 @@ export type Sshelter = {
     machines: Machine[];
 
     isEditPaneRequesting: boolean;
+    currentlyEditedMachine: Machine|null;
 };
 
 export type SshelterCtx = Sshelter & {
@@ -23,6 +23,7 @@ const initialState: Sshelter = {
     loading: true,
     machines: [],
     isEditPaneRequesting: false,
+    currentlyEditedMachine: null,
 };
 
 const SshelterContext = React.createContext<SshelterCtx>({
@@ -35,26 +36,23 @@ const SshelterContext = React.createContext<SshelterCtx>({
 
 export function SshelterProvider({children}: {children: React.ReactNode}) {
     const auth = useAuth();
+    const api = useApi();
     const [state, setState] = useState<Sshelter>(initialState);
 
     const refresh = async () => {
         setState({...state, loading: true})
-        const request = await fetch('/api/machines', {
-            headers: {
-                'Authorization': 'Bearer ' + auth.token,
-            },
-        });
-
-        const resp = await request.json();
-        setState({...state, loading: false, machines: resp['hydra:member']});
+        setState({...state, loading: false, machines: (await api("/api/machines"))['hydra:member']});
     };
 
     const createMachine = async (machine: Machine) => {
+        machine.port = typeof machine.port === "string" ? parseInt(machine.port) : machine.port;
         setState({...state, isEditPaneRequesting: true})
         await fetch('/api/machines', {
             'method': 'POST',
             'headers': {
                 'Authorization': 'Bearer ' + auth.token,
+                'Content-Type': 'application/ld+json',
+                'Accept': 'application/ld+json',
             },
             'body': JSON.stringify(machine),
         });
@@ -62,7 +60,7 @@ export function SshelterProvider({children}: {children: React.ReactNode}) {
         // Handle validation 
         setTimeout(() => setState({...state, isEditPaneRequesting: true}), 2000)
 
-        refresh();
+        await refresh();
     }
 
     const updateMachine = async (machine: Machine) => {
@@ -71,7 +69,7 @@ export function SshelterProvider({children}: {children: React.ReactNode}) {
         // @TODO => display a snackbar to say if it worked or not
         // Handle validation 
         setTimeout(() => setState({...state, isEditPaneRequesting: true}), 2000)
-        refresh();
+        await refresh();
     }
 
     const deleteMachine = async (machine: Machine) => {
