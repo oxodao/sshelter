@@ -64,8 +64,17 @@ export function SshelterProvider({children}: {children: React.ReactNode}) {
     }
 
     const updateMachine = async (machine: Machine) => {
+        machine.port = typeof machine.port === "string" ? parseInt(machine.port) : machine.port;
         setState({...state, isEditPaneRequesting: true})
-        console.log('Update machine');
+        await fetch(machine['@id'], {
+            'method': 'PUT',
+            'headers': {
+                'Authorization': 'Bearer ' + auth.token,
+                'Content-Type': 'application/ld+json',
+                'Accept': 'application/ld+json',
+            },
+            'body': JSON.stringify(machine),
+        });
         // @TODO => display a snackbar to say if it worked or not
         // Handle validation 
         setTimeout(() => setState({...state, isEditPaneRequesting: true}), 2000)

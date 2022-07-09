@@ -21,9 +21,12 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
+/**
+ * @TODO: Permissions on the machine (Cant get/edit/remove a machine owned by someone else)
+ */
 #[Entity]
-#[UniqueEntity(['name', 'user'])]
-#[UniqueEntity(['shortName', 'user'])]
+#[UniqueEntity(['name', 'owner'])]
+#[UniqueEntity(['shortName', 'owner'])]
 #[ApiResource(
     collectionOperations: [
         'get'  => [

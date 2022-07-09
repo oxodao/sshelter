@@ -17,11 +17,12 @@ export default function EditPane() {
     });
 
     const save = (m: Machine) => {
+        console.log(m);
         if (editor.machine && editor.machine['@id'] && editor.machine['@id'].length > 0) {
             m['@id'] = editor.machine['@id'];
         }
 
-        editor.save();
+        editor.save(m);
     };
 
     return <Box mt={10} ml={2}>

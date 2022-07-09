@@ -20,7 +20,7 @@ export type MachineEdition = {
 
 export type MachineEditionCtx = MachineEdition & {
     setMachine: (machine: Machine | null) => void;
-    save: () => void;
+    save: (m: Machine) => void;
     remove: () => void;
 };
 
@@ -53,8 +53,19 @@ export function MachineEditionProvider({ children }: { children: React.ReactNode
         setModalOpened(false);
     };
 
-    const save = () => {
+    const save = async (m: Machine) => {
+        if (!m) {
+            return;
+        }
 
+        let response = null;
+        if (!!m['@id'] && m['@id'].length > 0) {
+            response = sshelter.updateMachine(m);
+        } else {
+            response = sshelter.createMachine(m);
+        }
+
+        return response;
     };
 
     return <MachineEditionContext.Provider value={{
